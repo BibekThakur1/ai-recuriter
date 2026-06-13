@@ -1,27 +1,18 @@
 "use client";
 
-import { Github, ExternalLink, Bot } from "lucide-react";
-import Link from "next/link";
+import { Github, ExternalLink } from "lucide-react";
+import BrandMark from "@/app/components/BrandMark";
 
 export default function Footer() {
     return (
-        <footer className="w-full border-t border-border bg-card/50 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto px-6 py-8">
+        <footer className="w-full border-t border-border bg-card/80">
+            <div className="max-w-7xl mx-auto px-5 py-8 md:px-8">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                    {/* Brand */}
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                            <Bot className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="text-sm font-semibold text-text-primary tracking-tight">
-                            AI Recruiter
-                        </span>
-                    </div>
+                    <BrandMark />
 
-                    {/* Credit */}
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold text-xs">
+                            <div className="w-9 h-9 rounded-full bg-text-primary flex items-center justify-center text-card font-bold text-xs">
                                 BT
                             </div>
                             <div>
@@ -48,9 +39,9 @@ export default function Footer() {
                     </a>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-border/50 text-center">
+                <div className="mt-6 pt-6 border-t border-border text-center">
                     <p className="text-xs text-text-secondary">
-                        &copy; {new Date().getFullYear()} Bibek Thakur. Built with Next.js, Clerk &amp; Supabase.
+                        &copy; {new Date().getFullYear()} Bibek Thakur. Built with Next.js, Clerk, Supabase, and OpenAI.
                     </p>
                 </div>
             </div>

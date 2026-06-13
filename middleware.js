@@ -2,15 +2,38 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/api/set-role(.*)", "/onboarding"]);
-const isRecruiterRoute = createRouteMatcher(["/dashboard/recruiter(.*)", "/dashboard/organization(.*)", "/dashboard/jobs(.*)"]);
+const isRecruiterRoute = createRouteMatcher([
+    "/dashboard/recruiter(.*)",
+    "/dashboard/organization(.*)",
+    "/dashboard/jobs(.*)",
+    "/dashboard/pipeline(.*)",
+    "/dashboard/candidates(.*)",
+    "/dashboard/analytics(.*)",
+    "/dashboard/integrations(.*)",
+]);
 const isAdminRoute = createRouteMatcher(["/dashboard/admin(.*)"]);
+
+function getRoleFromClaims(sessionClaims) {
+    return (
+        sessionClaims?.metadata?.role ||
+        sessionClaims?.publicMetadata?.role ||
+        sessionClaims?.public_metadata?.role ||
+        sessionClaims?.role ||
+        "candidate"
+    );
+}
 
 export default clerkMiddleware(async (auth, req) => {
     if (isProtectedRoute(req)) {
-        await auth.protect();
+        const { userId, sessionClaims } = await auth();
 
-        const { sessionClaims } = await auth();
-        const role = sessionClaims?.metadata?.role || "candidate";
+        if (!userId) {
+            const signInUrl = new URL("/auth/sign-in", req.url);
+            signInUrl.searchParams.set("redirect_url", req.url);
+            return NextResponse.redirect(signInUrl);
+        }
+
+        const role = getRoleFromClaims(sessionClaims);
 
         // Role-based protection
         if (isRecruiterRoute(req) && role !== "recruiter" && role !== "admin") {

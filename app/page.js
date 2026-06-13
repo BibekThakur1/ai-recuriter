@@ -1,231 +1,260 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowRight, Bot, Clock, ShieldCheck, Zap } from "lucide-react";
-import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BarChart3,
+  CheckCircle2,
+  Clock3,
+  Link2,
+  Mic2,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
+import Link from "next/link";
+import BrandMark from "@/app/components/BrandMark";
 import Footer from "@/app/components/Footer";
 
+const metrics = [
+  { label: "Screened", value: "128", detail: "+24 this week" },
+  { label: "Avg. score", value: "82", detail: "top quartile" },
+  { label: "Hours saved", value: "46", detail: "first rounds" },
+];
+
+const candidates = [
+  { name: "Nisha P.", role: "Frontend Engineer", score: 92, tag: "Strong follow-up" },
+  { name: "Daniel K.", role: "Backend Engineer", score: 86, tag: "Review today" },
+  { name: "Maya R.", role: "Product Designer", score: 79, tag: "Good signal" },
+];
 
 export default function LandingPage() {
-  const { isLoaded, userId } = useAuth();
-
-  const containerVars = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 },
-    },
-  };
-
-  const itemVars = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4 } },
-  };
+  const { userId } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden relative selection:bg-primary selection:text-white">
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent blur-[120px] rounded-full mix-blend-screen" />
-      </div>
-
-      {/* Navigation */}
-      <nav className="relative z-10 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div className="min-h-screen overflow-hidden bg-background text-text-primary selection:bg-primary selection:text-white">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
+        <BrandMark />
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-xl font-semibold tracking-tight text-text-primary">
-            AI Recruiter
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/auth/sign-in" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">
-            Log in
+          <Link
+            href="/auth/sign-in"
+            className="rounded-full px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+          >
+            Sign in
           </Link>
           <Link
             href={userId ? "/dashboard" : "/auth/sign-up"}
-            className="text-sm font-medium bg-card border border-border px-4 py-2 rounded-lg text-text-primary hover:bg-border transition-colors"
+            className="rounded-full bg-text-primary px-4 py-2 text-sm font-semibold text-card shadow-sm transition-transform hover:-translate-y-0.5"
           >
-            {userId ? "Dashboard" : "Get Started"}
+            {userId ? "Dashboard" : "Start hiring"}
           </Link>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-24 text-center">
-        <motion.div
-          variants={containerVars}
-          initial="hidden"
-          animate="show"
-          className="flex flex-col items-center max-w-3xl mx-auto"
-        >
-          <motion.div variants={itemVars} className="mb-6 px-4 py-1.5 rounded-full border border-border/50 bg-card/30 backdrop-blur-md">
-            <span className="text-sm font-medium bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
-              Introducing Voice AI Interviews 2.0 ✨
-            </span>
-          </motion.div>
-
-          <motion.h1 variants={itemVars} className="text-5xl md:text-7xl font-bold tracking-tight text-balance mb-8">
-            Hire <span className="text-accent">60% Faster</span> with AI Interviews
-          </motion.h1>
-
-          <motion.p variants={itemVars} className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl text-balance">
-            Automate first-round screening with an intelligent voice AI that conducts technical and behavioral interviews, scores candidates, and delivers actionable insights.
-          </motion.p>
-
-          <motion.div variants={itemVars} className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-            <Link
-              href="/auth/sign-up"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-white font-medium text-lg hover:bg-secondary transition-all hover:shadow-[0_0_30px_-5px_var(--accent)] flex items-center justify-center gap-2 group"
-            >
-              Start Free Trial
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* Feature Cards Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7 }}
-          className="mt-32 grid md:grid-cols-3 gap-6 text-left"
-        >
-          {[
-            {
-              icon: <Clock className="w-6 h-6 text-accent" />,
-              title: "Save Time",
-              desc: "Reclaim hundreds of hours spent on initial phone screens. Let the AI do the heavy lifting.",
-            },
-            {
-              icon: <Zap className="w-6 h-6 text-accent" />,
-              title: "Deep Evaluation",
-              desc: "Get comprehensive scores on technical skills, communication, and confidence.",
-            },
-            {
-              icon: <ShieldCheck className="w-6 h-6 text-accent" />,
-              title: "Unbiased Scoring",
-              desc: "Ensure fair and consistent evaluations across all candidates without human bias.",
-            },
-          ].map((feature, i) => (
-            <div
-              key={i}
-              className="p-6 rounded-2xl bg-card border border-border hover:border-border/80 hover:bg-card/80 transition-all group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-text-primary">{feature.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{feature.desc}</p>
+      <main>
+        <section className="mx-auto grid min-h-[calc(100vh-84px)] max-w-7xl items-center gap-12 px-5 pb-14 pt-10 md:grid-cols-[0.92fr_1.08fr] md:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="max-w-2xl"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-text-secondary shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-success" />
+              Structured first-round interviews, ready today
             </div>
-          ))}
-        </motion.div>
 
-        {/* How It Works Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7 }}
-          className="mt-40 pt-20 border-t border-border/50 text-left relative"
-        >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+            <h1 className="text-balance text-5xl font-semibold leading-[0.98] tracking-tight text-text-primary md:text-7xl">
+              Hire with clearer signal before the first call.
+            </h1>
 
-          <div className="text-center mb-20 relative z-10">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-text-primary">How AI Recruiter Works</h2>
-            <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-              From job post to final decision in three simple steps.
+            <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
+              Hireflow turns every job post into a scored interview flow: generate questions, share a candidate link, and review summaries without spreadsheet chaos.
             </p>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-12 relative z-10">
-            {[
-              {
-                step: "01",
-                title: "Create Job & Generate Questions",
-                desc: "Enter your job requirements. Our AI instantly generates a structured, technical, and behavioral interview script tailored to the role."
-              },
-              {
-                step: "02",
-                title: "Share Link with Candidates",
-                desc: "Send the unique interview link. Candidates join a voice-to-voice call with our intelligent AI interviewer at their convenience."
-              },
-              {
-                step: "03",
-                title: "Review Ranked Results",
-                desc: "Get instantly scored transcripts. Candidates are automatically ranked by technical knowledge, communication, and confidence."
-              }
-            ].map((item, i) => (
-              <div key={i} className="relative group">
-                <div className="text-6xl font-black text-border/50 absolute -top-10 -left-4 group-hover:text-primary/20 transition-colors z-0">
-                  {item.step}
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={userId ? "/dashboard" : "/auth/sign-up"}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+              >
+                {userId ? "Open workspace" : "Create an interview"}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-text-primary shadow-sm transition-colors hover:bg-white"
+              >
+                View dashboard
+              </Link>
+            </div>
+
+            <div className="mt-10 grid grid-cols-3 gap-3 border-t border-border pt-6">
+              {metrics.map((metric) => (
+                <div key={metric.label}>
+                  <p className="text-2xl font-semibold tracking-tight">{metric.value}</p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-text-secondary">{metric.label}</p>
+                  <p className="mt-1 text-sm text-text-secondary">{metric.detail}</p>
                 </div>
-                <div className="relative z-10 pt-6">
-                  <h3 className="text-xl font-bold text-text-primary mb-4">{item.title}</h3>
-                  <p className="text-text-secondary leading-relaxed">{item.desc}</p>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.12, duration: 0.6 }}
+            className="relative"
+          >
+            <div className="paper-shadow overflow-hidden rounded-[28px] border border-border bg-card">
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-danger" />
+                  <span className="h-3 w-3 rounded-full bg-warning" />
+                  <span className="h-3 w-3 rounded-full bg-success" />
+                </div>
+                <div className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-text-secondary">
+                  recruiter workspace
                 </div>
               </div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* Pricing Section */}
-        <div className="mt-40 pt-20 border-t border-border/50 relative z-10">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-text-primary">Simple, transparent pricing</h2>
-          <p className="text-text-secondary text-lg mb-16 max-w-2xl mx-auto">Start for free, upgrade when you need more power.</p>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto text-left">
-            {[
-              {
-                name: "Starter",
-                price: "Free",
-                features: ["3 AI Interviews / month", "Basic Question Generation", "Standard Analytics", "Community Support"]
-              },
-              {
-                name: "Growth",
-                price: "$99/mo",
-                popular: true,
-                features: ["100 AI Interviews / month", "Advanced AI Evaluation", "Custom Interview Scripts", "Priority Support"]
-              },
-              {
-                name: "Enterprise",
-                price: "Custom",
-                features: ["Unlimited Interviews", "Multi-Org & SSO", "Custom AI Models", "Dedicated Success Manager"]
-              },
-            ].map((tier, i) => (
-              <div key={i} className={`p-8 rounded-3xl border flex flex-col h-full ${tier.popular ? 'border-primary shadow-[0_0_30px_-15px_var(--primary)] relative bg-card/80 backdrop-blur-sm' : 'border-border bg-card/50'}`}>
-                {tier.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                    Most Popular
+              <div className="grid gap-0 md:grid-cols-[220px_1fr]">
+                <aside className="hidden border-r border-border bg-[#f0eee6] p-5 md:block">
+                  <BrandMark compact />
+                  <div className="mt-8 space-y-2">
+                    {["Overview", "Jobs", "Candidates", "Analytics"].map((item, index) => (
+                      <div
+                        key={item}
+                        className={`rounded-full px-3 py-2 text-sm font-medium ${index === 0 ? "bg-card text-text-primary shadow-sm" : "text-text-secondary"}`}
+                      >
+                        {item}
+                      </div>
+                    ))}
                   </div>
-                )}
-                <h3 className="text-xl font-semibold text-text-primary mb-2">{tier.name}</h3>
-                <div className="text-4xl font-bold mb-6 text-text-primary">{tier.price}</div>
+                </aside>
 
-                <ul className="space-y-4 mb-8 flex-1">
-                  {tier.features.map((f, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-text-secondary">
-                      <ShieldCheck className="w-5 h-5 text-success shrink-0" />
-                      <span className="text-sm">{f}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="p-5 md:p-6">
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-text-secondary">Senior Product Engineer</p>
+                      <h2 className="mt-1 text-2xl font-semibold tracking-tight">Candidate review</h2>
+                    </div>
+                    <div className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white">
+                      8 questions ready
+                    </div>
+                  </div>
 
-                <Link href={tier.name === "Enterprise" ? "mailto:contact@airecruiter.com" : "/auth/sign-up"}>
-                  <button className={`w-full py-4 rounded-xl font-bold transition-all ${tier.popular ? 'bg-primary hover:bg-secondary text-white shadow-lg shadow-primary/25' : 'bg-background hover:bg-border text-text-primary border border-border'}`}>
-                    {tier.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-                  </button>
-                </Link>
+                  <div className="mt-6 grid gap-3 md:grid-cols-3">
+                    {[
+                      { icon: UsersRound, label: "Candidates", value: "34" },
+                      { icon: Clock3, label: "Median time", value: "18m" },
+                      { icon: BarChart3, label: "Top score", value: "92" },
+                    ].map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={item.label} className="rounded-2xl border border-border bg-background p-4">
+                          <Icon className="h-4 w-4 text-primary" />
+                          <p className="mt-4 text-2xl font-semibold">{item.value}</p>
+                          <p className="text-sm text-text-secondary">{item.label}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-5 space-y-3">
+                    {candidates.map((candidate) => (
+                      <div key={candidate.name} className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <div className="grid h-10 w-10 place-items-center rounded-full bg-text-primary text-sm font-semibold text-card">
+                            {candidate.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-semibold">{candidate.name}</p>
+                            <p className="text-sm text-text-secondary">{candidate.role}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-semibold">{candidate.score}</p>
+                          <p className="text-xs text-text-secondary">{candidate.tag}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 rounded-2xl border border-border bg-[#173f35] p-5 text-white">
+                    <div className="flex items-center gap-2 text-sm font-medium text-white/70">
+                      <Sparkles className="h-4 w-4 text-accent" />
+                      AI summary
+                    </div>
+                    <p className="mt-3 leading-7 text-white/90">
+                      Nisha shows strong React architecture depth, clear tradeoff thinking, and concise communication. Recommended for live technical round.
+                    </p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
+          </motion.div>
+        </section>
+
+        <section className="border-y border-border bg-card/70">
+          <div className="mx-auto grid max-w-7xl gap-6 px-5 py-16 md:grid-cols-3 md:px-8">
+            {[
+              {
+                icon: Mic2,
+                title: "Interview script in one click",
+                body: "Generate role-specific questions from title, skills, seniority, and interview type.",
+              },
+              {
+                icon: Link2,
+                title: "Tokenized candidate links",
+                body: "Each job gets a shareable public interview URL without exposing dashboard data.",
+              },
+              {
+                icon: BadgeCheck,
+                title: "Scored recruiter review",
+                body: "Summaries, transcripts, score cards, and recommendations land back in the dashboard.",
+              },
+            ].map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div key={feature.title} className="rounded-3xl border border-border bg-background p-6">
+                  <Icon className="h-5 w-5 text-primary" />
+                  <h3 className="mt-8 text-xl font-semibold tracking-tight">{feature.title}</h3>
+                  <p className="mt-3 leading-7 text-text-secondary">{feature.body}</p>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-5 py-20 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">How it works</p>
+              <h2 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">A real hiring loop, not a demo shell.</h2>
+            </div>
+            <div className="grid gap-4">
+              {[
+                "Recruiter creates an organization and posts a role.",
+                "OpenAI generates a structured interview script for the role.",
+                "Candidate submits answers through a secure interview token.",
+                "Recruiter reviews ranked candidates, summaries, and analytics.",
+              ].map((item, index) => (
+                <div key={item} className="flex gap-4 rounded-3xl border border-border bg-card p-5">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-text-primary text-sm font-semibold text-card">
+                    {index + 1}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-success" />
+                    <p className="text-lg font-medium">{item}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );

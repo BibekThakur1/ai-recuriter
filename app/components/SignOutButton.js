@@ -14,7 +14,7 @@ export default function SignOutButton() {
     return (
         <button
             onClick={() => signOut({ redirectUrl: "/" })}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-danger hover:bg-danger/10 transition-colors font-medium text-sm"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-full text-danger hover:bg-danger/10 transition-colors font-medium text-sm"
         >
             <LogOut className="w-5 h-5" />
             Logout

@@ -1,10 +1,11 @@
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
   variable: "--font-inter",
+  weight: "100 900",
 });
 
 export const metadata = {
@@ -14,8 +15,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={inter.variable}>
+    <ClerkProvider
+      signInUrl="/auth/sign-in"
+      signUpUrl="/auth/sign-up"
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/onboarding"
+      signUpForceRedirectUrl="/onboarding"
+    >
+      <html lang="en" className={geistSans.variable}>
         <body className="antialiased font-sans bg-background text-text-primary">
           {children}
         </body>

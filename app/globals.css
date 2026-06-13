@@ -4,19 +4,20 @@
 
 @layer base {
   :root {
-    --background: #0F172A;
-    --card-background: #1E293B;
-    --border: #334155;
+    --background: #f6f5ef;
+    --card-background: #fffefa;
+    --border: #dedbd0;
     
-    --primary: #4F46E5;
-    --secondary: #6366F1;
-    --accent: #22D3EE;
+    --primary: #1f6f5b;
+    --secondary: #153f35;
+    --accent: #f26f4c;
     
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
+    --text-primary: #171715;
+    --text-secondary: #6f6d66;
     
-    --success: #10B981;
-    --danger: #EF4444;
+    --success: #198754;
+    --danger: #c2412d;
+    --warning: #b7791f;
 
     /* 8px base grid size variable (1 unit = 0.5rem = 8px) */
     --grid-unit: 8px;
@@ -25,12 +26,24 @@
   body {
     @apply bg-background text-text-primary antialiased;
     font-family: var(--font-inter), sans-serif;
+    background-image:
+      linear-gradient(rgba(23, 23, 21, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23, 23, 21, 0.035) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .paper-shadow {
+    box-shadow: 0 1px 0 rgba(23, 23, 21, 0.08), 0 24px 80px rgba(23, 23, 21, 0.08);
+  }
+
+  .hairline {
+    box-shadow: inset 0 0 0 1px var(--border);
   }
 }
 

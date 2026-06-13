@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Users, Clock, Zap, Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { fetchUserOrganization } from "@/app/actions/organizations";
+import { fetchRecruiterAnalytics } from "@/app/actions/interview";
 
 export default async function RecruiterDashboard() {
     // Server-side role validation
@@ -18,18 +19,13 @@ export default async function RecruiterDashboard() {
         redirect("/dashboard/organization");
     }
 
-    const stats = [
-        { name: "Total Interviews", value: "142", icon: Users, change: "+12%" },
-        { name: "Average Score", value: "78.4", icon: Target, change: "+3.2%" },
-        { name: "Time Saved", value: "60%", icon: Clock, highlight: true },
-        { name: "Efficiency Boost", value: "40%", icon: Zap },
-    ];
+    const analytics = await fetchRecruiterAnalytics();
 
-    const recentCandidates = [
-        { id: 1, name: "Alice Freeman", role: "Frontend Engineer", score: 88, status: "completed" },
-        { id: 2, name: "Bob Smith", role: "Backend Engineer", score: 92, status: "completed" },
-        { id: 3, name: "Charlie Davis", role: "Product Designer", score: null, status: "pending" },
-        { id: 4, name: "Dana Lee", role: "Full Stack Dev", score: 85, status: "completed" },
+    const stats = [
+        { name: "Total Interviews", value: analytics.totalInterviews, icon: Users },
+        { name: "Average Score", value: analytics.averageScore, icon: Target },
+        { name: "Completed", value: analytics.completedInterviews, icon: Clock, highlight: true },
+        { name: "Pending Review", value: analytics.pendingInterviews, icon: Zap },
     ];
 
     return (
@@ -39,10 +35,11 @@ export default async function RecruiterDashboard() {
                     <h1 className="text-3xl font-bold text-text-primary">Overview</h1>
                     <p className="text-text-secondary mt-1">Metrics and recent activity for your organization.</p>
                 </div>
-                <Link href="/dashboard/jobs/new">
-                    <button className="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-lg font-medium shadow-lg transition-transform active:scale-95 shadow-primary/25">
-                        Create New Job
-                    </button>
+                <Link
+                    href="/dashboard/jobs/new"
+                    className="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-lg font-medium shadow-lg transition-transform active:scale-95 shadow-primary/25"
+                >
+                    Create New Job
                 </Link>
             </div>
 
@@ -88,36 +85,41 @@ export default async function RecruiterDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/50">
-                            {recentCandidates.map((c) => (
-                                <tr key={c.id} className="hover:bg-background/40 transition-colors group">
-                                    <td className="px-6 py-4">
-                                        <div className="font-medium text-text-primary">{c.name}</div>
-                                    </td>
-                                    <td className="px-6 py-4 text-text-secondary text-sm">{c.role}</td>
-                                    <td className="px-6 py-4">
-                                        {c.score ? (
+                            {analytics.topCandidates.length > 0 ? (
+                                analytics.topCandidates.map((c) => (
+                                    <tr key={c.id} className="hover:bg-background/40 transition-colors group">
+                                        <td className="px-6 py-4">
+                                            <div className="font-medium text-text-primary">{c.candidate_name}</div>
+                                            <div className="text-xs text-text-secondary">{c.candidate_email}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-text-secondary text-sm">{c.jobs?.title || "Unknown role"}</td>
+                                        <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-full bg-background rounded-full h-2 max-w-[100px]">
-                                                    <div className="bg-primary h-2 rounded-full" style={{ width: `${c.score}%` }} />
+                                                    <div className="bg-primary h-2 rounded-full" style={{ width: `${c.overall_score || 0}%` }} />
                                                 </div>
-                                                <span className="text-sm font-bold text-text-primary">{c.score}</span>
+                                                <span className="text-sm font-bold text-text-primary">{c.overall_score || 0}</span>
                                             </div>
-                                        ) : (
-                                            <span className="text-sm text-text-secondary italic">Pending</span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${c.status === 'completed' ? 'bg-success/10 text-success' : 'bg-accent/10 text-accent'}`}>
-                                            {c.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button className="text-sm text-text-secondary hover:text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                                            View Results
-                                        </button>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-success/10 text-success">
+                                                {c.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <Link href={`/dashboard/candidates/${c.id}`} className="text-sm text-text-secondary hover:text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                                                View Results
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td className="px-6 py-10 text-center text-text-secondary" colSpan={5}>
+                                        No completed interviews yet. Create a job and share its interview link to collect candidates.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

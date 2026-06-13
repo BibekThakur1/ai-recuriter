@@ -21,6 +21,7 @@ module.exports = {
         
         success: "var(--success)",
         danger: "var(--danger)",
+        warning: "var(--warning)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],

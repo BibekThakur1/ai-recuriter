@@ -1,7 +1,8 @@
 import { fetchJobById } from "@/app/actions/jobs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, BrainCircuit, Link as LinkIcon, Sparkles } from "lucide-react";
+import { ArrowLeft, ExternalLink, Users, BrainCircuit, Link as LinkIcon, Sparkles, Star } from "lucide-react";
+import CopyButton from "@/app/components/CopyButton";
 
 export default async function JobDetailPage({ params }) {
     const job = await fetchJobById(params.id);
@@ -54,18 +55,23 @@ export default async function JobDetailPage({ params }) {
                             <div className="flex-1">
                                 <h2 className="text-xl font-bold text-text-primary mb-2">Candidate Interview Link</h2>
                                 <p className="text-text-secondary text-sm mb-4">
-                                    Share this unique link with candidates. They will instantly connect with our Voice AI interviewer to complete their screening.
+                                    Share this unique link with candidates. They will complete the AI interview, and their answers will be scored for your team.
                                 </p>
 
                                 <div className="flex items-center gap-3">
                                     <code className="flex-1 bg-background border border-border rounded-lg px-4 py-3 text-sm text-text-primary overflow-x-auto whitespace-nowrap scrollbar-hide">
                                         {interviewLink}
                                     </code>
-                                    {/* Client component wrapper for copy logic would go here, omitting for SSR simplicity, falling back to a dummy button for now */}
-                                    <button className="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg font-medium transition-all active:scale-95 shadow-lg shadow-primary/20 whitespace-nowrap">
-                                        Copy Link
-                                    </button>
+                                    <CopyButton value={interviewLink} label="Copy Link" />
                                 </div>
+                                <Link
+                                    href={`/interview/${job.interview_token}`}
+                                    target="_blank"
+                                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-text-primary hover:bg-background"
+                                >
+                                    Open candidate view
+                                    <ExternalLink className="h-4 w-4" />
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -91,6 +97,52 @@ export default async function JobDetailPage({ params }) {
                             ) : (
                                 <div className="text-center py-8">
                                     <p className="text-text-secondary italic">No AI questions generated for this job.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+                        <div className="px-6 py-5 border-b border-border/50 flex items-center gap-3 bg-background/50">
+                            <Users className="w-5 h-5 text-accent" />
+                            <h2 className="text-xl font-semibold text-text-primary">Candidate Results</h2>
+                        </div>
+                        <div className="divide-y divide-border/60">
+                            {job.interviews && job.interviews.length > 0 ? (
+                                job.interviews.map((interview) => (
+                                    <div key={interview.id} className="p-6">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div>
+                                                <h3 className="font-semibold text-text-primary">{interview.candidate_name}</h3>
+                                                <p className="text-sm text-text-secondary">{interview.candidate_email}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2">
+                                                <Star className="w-4 h-4 text-accent" />
+                                                <span className="font-bold text-text-primary">{interview.overall_score || 0}</span>
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-text-secondary mt-4 leading-relaxed">
+                                            {interview.ai_summary || "No summary available yet."}
+                                        </p>
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            <span className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                                                {interview.hiring_recommendation || "Review manually"}
+                                            </span>
+                                            <span className="px-2.5 py-1 rounded-full bg-background border border-border text-text-secondary text-xs">
+                                                {interview.application_stage || interview.status}
+                                            </span>
+                                            <Link
+                                                href={`/dashboard/candidates/${interview.id}`}
+                                                className="px-2.5 py-1 rounded-full bg-text-primary text-card text-xs font-semibold"
+                                            >
+                                                Review candidate
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="p-8 text-center">
+                                    <p className="text-text-secondary italic">No candidates have completed this interview yet.</p>
                                 </div>
                             )}
                         </div>
@@ -122,18 +174,18 @@ export default async function JobDetailPage({ params }) {
                     </div>
 
                     {/* Candidates Link */}
-                    <div className="bg-card border border-border rounded-xl p-6 group cursor-pointer hover:border-primary/50 transition-colors">
+                    <Link href="/dashboard/candidates" className="block bg-card border border-border rounded-xl p-6 group hover:border-primary/50 transition-colors">
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                                 <Users className="w-5 h-5 text-primary" />
                                 <h3 className="font-semibold text-text-primary">Candidates</h3>
                             </div>
                             <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary group-hover:scale-110 transition-transform">
-                                0
+                                {job.interviews?.length || 0}
                             </span>
                         </div>
                         <p className="text-sm text-text-secondary">View and rank applicants</p>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>
