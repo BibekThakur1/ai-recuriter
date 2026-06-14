@@ -6,7 +6,7 @@ export async function POST(req) {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
     if (!WEBHOOK_SECRET) {
-        throw new Error('Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local');
+        return new Response('Webhook not configured', { status: 503 });
     }
 
     const headerPayload = headers();
@@ -52,20 +52,25 @@ export async function POST(req) {
                 return new Response('Error: No email address', { status: 400 });
             }
 
-            await supabase.from('users').upsert({
+            const safeRole = ['candidate', 'recruiter', 'admin'].includes(role) ? role : 'candidate';
+
+            const { error } = await supabase.from('users').upsert({
                 id,
                 email,
-                role,
+                role: safeRole,
                 organization_id,
                 full_name,
                 avatar_url,
                 // Using JS Date to ensure Clerk's millis translate correctly to Postgres TIMESTAMP
                 created_at: new Date(evt.data.created_at).toISOString()
             }, { onConflict: 'id' });
+
+            if (error) throw error;
         }
 
         if (eventType === 'user.deleted') {
-            await supabase.from('users').delete().eq('id', id);
+            const { error } = await supabase.from('users').delete().eq('id', id);
+            if (error) throw error;
         }
     } catch (dbError) {
         console.error('Database Sync Error:', dbError);

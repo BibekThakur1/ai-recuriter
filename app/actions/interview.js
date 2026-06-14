@@ -232,6 +232,17 @@ export async function submitCandidateInterview(formData) {
 
     const analysis = await analyzeInterview({ job, transcript, resumeText });
 
+    const { data: existingSubmission } = await supabase
+        .from("interviews")
+        .select("id")
+        .eq("job_id", job.id)
+        .eq("candidate_email", candidateEmail)
+        .maybeSingle();
+
+    if (existingSubmission) {
+        throw new Error("An interview has already been submitted with this email for this job.");
+    }
+
     const { data: interview, error } = await supabase
         .from("interviews")
         .insert([
